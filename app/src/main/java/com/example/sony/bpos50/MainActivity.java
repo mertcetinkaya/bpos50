@@ -354,9 +354,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                         int present_rssi=list_rssi.get(list_device_address.indexOf(list_device_address_all.get(present_reference_index)));
 
+                        if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==1){
+                            direction=2;
+                            numSteps=0;
+                        }
+
+                        else if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==2){
+                            direction=1;
+                            numSteps=0;
+                        }
 
 
-                        if((present_reference_index==7 && previous_reference_index==0) || (present_reference_index==7 && previous_reference_index==1) ){
+
+                        else if((present_reference_index==7 && previous_reference_index==0) || (present_reference_index==7 && previous_reference_index==1) ){
                             direction=2;
                             numSteps=0;
                         }
@@ -425,22 +435,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     }
 
                                     else{
-                                        //direction=-1;
-                                        //numSteps=0;
-                                        if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==1){
-                                            direction=2;
-                                            numSteps=0;
-                                        }
 
-                                        else if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==2){
-                                            direction=1;
-                                            numSteps=0;
-                                        }
-
-                                        else{
-                                            direction=-1;
-                                            numSteps=0;
-                                        }
+                                        direction=-1;
+                                        numSteps=0;
 
                                     }
                                 }
