@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     double x=0;
     double y=0;
     double z=0;
+    List<Double> gyro_z_list = new ArrayList<Double>();
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -217,10 +218,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             //Log.e("GYRO",event.values[0]+" "+event.values[1]+" "+event.values[2]);
 
+            if(gyro_z_list.size()==40){
+                gyro_z_list.clear();
+            }
+
 
             x=event.values[0];
             y=event.values[1];
             z=event.values[2];
+            gyro_z_list.add(z);
+
+
+
+            //TvSteps.setText(/*TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction+ */" gyro: \n"
+                    //+ x + " \n "+ y + " \n " + z + "\n hypo: " + Math.sqrt(x*x+y*y+z*z));
+
+            if(is_pressed){
+                clearList(list_to_write);
+                Long tsLong = System.currentTimeMillis();
+                String ts = tsLong.toString();
+                list_to_write.add(ts);
+                list_to_write.add(",");
+                list_to_write.add(""+z);
+                list_to_write.add("\n");
+                String last_list_to_write = "";
+                for (String x : list_to_write)
+                {
+                    last_list_to_write += x + "";
+                }
+
+
+                writeFile(last_list_to_write,"notes.csv");
+            }
+
+
+
 
 
         }
@@ -230,8 +262,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void step(long timeNs) {
         numSteps++;
-        TvSteps.setText(/*TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction+ */" gyro: \n"
-        + x + " \n "+ y + " \n " + z + "\n hypo: " + Math.sqrt(x*x+y*y+z*z));
+        TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction);
 
     }
 
@@ -277,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             myEdit.setText("");
             clearList(list_device_address);
             clearList(list_rssi);
-            clearList(list_to_write);
+            //clearList(list_to_write);
             count=0;
             mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);
@@ -372,23 +403,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                             if(direction==1)
                                                 direction=1;
                                             else{
-                                                direction=1;
-                                                numSteps=0;
+                                                if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1)){
+                                                    direction=1;
+                                                    numSteps=0;
+                                                }
+
+
                                             }
                                         }
                                         else if(a_rssi>c_rssi){
                                             if(direction==2)
                                                 direction=2;
                                             else{
-                                                direction=2;
-                                                numSteps=0;
+                                                if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1)){
+                                                    direction=2;
+                                                    numSteps=0;
+                                                }
+
                                             }
                                         }
                                     }
 
                                     else{
-                                        direction=-1;
-                                        numSteps=0;
+                                        //direction=-1;
+                                        //numSteps=0;
+                                        if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==1){
+                                            direction=2;
+                                            numSteps=0;
+                                        }
+
+                                        else if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==2){
+                                            direction=1;
+                                            numSteps=0;
+                                        }
+
+                                        else{
+                                            direction=-1;
+                                            numSteps=0;
+                                        }
+
                                     }
                                 }
 
@@ -402,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-                    if(is_pressed) {
+                    //if(is_pressed) {
                         /*
                         Long tsLong = System.currentTimeMillis();
                         String ts = tsLong.toString();
@@ -462,22 +515,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         writeFile(last_list_to_write,"notes.csv");
                         */
 
-                        Long tsLong = System.currentTimeMillis();
-                        String ts = tsLong.toString();
-                        list_to_write.add(ts);
-                        list_to_write.add(",");
-                        list_to_write.add(""+z);
-                        list_to_write.add("\n");
-                        String last_list_to_write = "";
-                        for (String x : list_to_write)
-                        {
-                            last_list_to_write += x + "";
-                        }
 
-
-                        writeFile(last_list_to_write,"notes.csv");
-
-                    }
+                    //}
                 }
             }, SCAN_PERIOD);
             mHandler.postDelayed(new Runnable() {
