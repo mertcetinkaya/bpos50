@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             //Log.e("GYRO",event.values[0]+" "+event.values[1]+" "+event.values[2]);
 
-            if(gyro_z_list.size()==40){
+            if(gyro_z_list.size()==30){
                 gyro_z_list.clear();
             }
 
@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //TvSteps.setText(/*TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction+ */" gyro: \n"
                     //+ x + " \n "+ y + " \n " + z + "\n hypo: " + Math.sqrt(x*x+y*y+z*z));
 
+/*
             if(is_pressed){
                 clearList(list_to_write);
                 Long tsLong = System.currentTimeMillis();
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 writeFile(last_list_to_write,"notes.csv");
             }
-
+*/
 
 
 
@@ -263,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void step(long timeNs) {
         numSteps++;
         TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction);
+
 
     }
 
@@ -308,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             myEdit.setText("");
             clearList(list_device_address);
             clearList(list_rssi);
-            //clearList(list_to_write);
+            clearList(list_to_write);
             count=0;
             mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);
@@ -350,16 +352,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         else
                             direction=-1;
 */
-
+                        double treshold=2;
 
                         int present_rssi=list_rssi.get(list_device_address.indexOf(list_device_address_all.get(present_reference_index)));
 
-                        if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==1){
+                        if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold) && direction==1){
                             direction=2;
                             numSteps=0;
                         }
 
-                        else if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1) && direction==2){
+                        else if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold) && direction==2){
                             direction=1;
                             numSteps=0;
                         }
@@ -413,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                             if(direction==1)
                                                 direction=1;
                                             else{
-                                                if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1)){
+                                                if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold)){
                                                     direction=1;
                                                     numSteps=0;
                                                 }
@@ -425,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                             if(direction==2)
                                                 direction=2;
                                             else{
-                                                if(gyro_z_list.size()>0 && (Collections.min(gyro_z_list)>1 || Collections.max(gyro_z_list)<-1)){
+                                                if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold)){
                                                     direction=2;
                                                     numSteps=0;
                                                 }
@@ -436,8 +438,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                                     else{
 
-                                        direction=-1;
-                                        numSteps=0;
+                                    direction=-1;
+                                    numSteps=0;
 
                                     }
                                 }
@@ -445,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             }
 
                         }
+
 
                         previous_reference_index=present_reference_index;
                         previous_rssi=list_rssi.get(list_device_address.indexOf(list_device_address_all.get(previous_reference_index)));
@@ -491,7 +494,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                         writeFile(last_list_to_write,"notes.csv");
                         */
-                        /*
+
                         Long tsLong = System.currentTimeMillis();
                         String ts = tsLong.toString();
                         list_to_write.add(ts);
@@ -510,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
                         writeFile(last_list_to_write,"notes.csv");
-                        */
+
 
 
                     //}
