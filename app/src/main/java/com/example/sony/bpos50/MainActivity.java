@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
             //Log.e("GYRO",event.values[0]+" "+event.values[1]+" "+event.values[2]);
 
-            if(gyro_z_list.size()==30){
+            if(gyro_z_list.size()==1000){
                 gyro_z_list.clear();
             }
 
@@ -263,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void step(long timeNs) {
         numSteps++;
-        TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction);
+        TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction + " "/*+Gyro_Mes*/+"\n"+
+        Collections.max(gyro_z_list) + " " + Collections.min(gyro_z_list));
 
 
     }
@@ -297,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     int count;
     public int direction;
+    public String Gyro_Mes;
     int present_reference_index;
     int previous_reference_index;
     public String reference_device;
@@ -359,11 +361,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold) && direction==1){
                             direction=2;
                             numSteps=0;
+                            gyro_z_list.clear();
+                            Gyro_Mes="Gyro1";
                         }
 
                         else if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold) && direction==2){
                             direction=1;
                             numSteps=0;
+                            gyro_z_list.clear();
+                            Gyro_Mes="Gyro2";
                         }
 
 
@@ -371,11 +377,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         else if((present_reference_index==7 && previous_reference_index==0) || (present_reference_index==7 && previous_reference_index==1) ){
                             direction=2;
                             numSteps=0;
+                            Gyro_Mes="";
                         }
 
                         else if((present_reference_index==0 && previous_reference_index==7) || (present_reference_index==1 && previous_reference_index==7)){
                             direction=1;
                             numSteps=0;
+                            Gyro_Mes="";
                         }
 
                         else{
@@ -383,15 +391,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     || (previous_reference_index+2)%list_device_address_all_number.size()==present_reference_index){
                                 direction=1;
                                 numSteps=0;
+                                Gyro_Mes="";
                             }
 
                             else if((previous_reference_index-1)%list_device_address_all_number.size()==present_reference_index
                                     || (previous_reference_index-2)%list_device_address_all_number.size()==present_reference_index){
                                 direction=2;
                                 numSteps=0;
+                                Gyro_Mes="";
                             }
 
                             else{
+                                Gyro_Mes="";
                                 if(present_reference_index==previous_reference_index && present_rssi>=previous_rssi && direction==1)
                                     direction=1;
                                 else if(present_reference_index==previous_reference_index && present_rssi>=previous_rssi && direction==2)
@@ -418,6 +429,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                                 if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold)){
                                                     direction=1;
                                                     numSteps=0;
+                                                    gyro_z_list.clear();
+                                                    Gyro_Mes="Gyro3";
                                                 }
 
 
@@ -430,6 +443,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                                 if(gyro_z_list.size()>0 && (Collections.max(gyro_z_list)>treshold || Collections.min(gyro_z_list)<-treshold)){
                                                     direction=2;
                                                     numSteps=0;
+                                                    gyro_z_list.clear();
+                                                    Gyro_Mes="Gyro4";
                                                 }
 
                                             }
@@ -440,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                                     direction=-1;
                                     numSteps=0;
+                                    Gyro_Mes="";
 
                                     }
                                 }
@@ -455,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-                    //if(is_pressed) {
+                    if(is_pressed) {
                         /*
                         Long tsLong = System.currentTimeMillis();
                         String ts = tsLong.toString();
@@ -516,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-                    //}
+                    }
                 }
             }, SCAN_PERIOD);
             mHandler.postDelayed(new Runnable() {
