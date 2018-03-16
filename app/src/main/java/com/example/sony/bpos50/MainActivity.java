@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView TvSteps;
     Button BtnStart;
     Button BtnStop;
+    Button LabMap;
     boolean step_watched=false;
 
 
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         TvSteps = (TextView) findViewById(R.id.tv_steps);
         BtnStart = (Button) findViewById(R.id.btn_start);
         BtnStop = (Button) findViewById(R.id.btn_stop);
+        LabMap = (Button)findViewById(R.id.lab_map);
 
         BtnStart.setOnClickListener(new OnClickListener() {
 
@@ -160,6 +162,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 step_watched=false;
                 sensorManager.unregisterListener(MainActivity.this);
 
+            }
+        });
+
+
+
+        LabMap.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intolab = new Intent(MainActivity.this, FizikLab.class);
+                startActivity(intolab);
             }
         });
 
