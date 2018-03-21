@@ -29,6 +29,20 @@
                 tools:layout_editor_absoluteX="45dp"
                 tools:layout_editor_absoluteY="67dp" />
 
+
+            <LinearLayout
+                android:id="@+id/glscreen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:visibility="gone">
+            <com.example.sony.bpos50.gltools.MapSurfaceView
+                android:id="@+id/glsurface"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+               />
+            </LinearLayout>
+
         </LinearLayout>
 
 
@@ -37,6 +51,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.6"
             android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/tv_steps"
