@@ -459,8 +459,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                             }
 
-                            if(direction==1 || direction==2)
+                            if(direction==1 || direction==2){
                                 last_direction=direction;
+                                if(max_rssi>-70){
+                                    in_beacon=true;
+                                    if(in_beacon){
+                                        numSteps=0;
+                                        TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction);
+
+                                        if(reference_device_number != null && !reference_device_number.trim().isEmpty() && (direction==1 || direction == 2))
+                                            map.set_location(Integer.valueOf(reference_device_number.substring(1)),direction,numSteps,40);
+                                    }
+                                    in_beacon=false;
+
+                                }
+                            }
+
                             if((direction!=1 || direction!=2) && max_rssi>-70){
                                 in_beacon=true;
                                 if(in_beacon){
