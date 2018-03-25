@@ -258,10 +258,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         }
     }
-
+    boolean unknown_dir;
     @Override
 
     public void step(long timeNs) {
+
+        unknown_dir=false;
+        if(direction!=1 && direction!=2)
+            unknown_dir=true;
+        if(unknown_dir){
+            direction=last_direction;
+            numSteps=0;
+        }
+
 
 
         //fixme map.set_location(3,1,numSteps,40);
@@ -274,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         numSteps++;
+        if(unknown_dir){
+            direction=-1;
+        }
 
 
     }
