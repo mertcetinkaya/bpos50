@@ -265,12 +265,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
         //fixme map.set_location(3,1,numSteps,40);
-        TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction + " "/*+Gyro_Mes*/+"\n"+
-        Collections.max(gyro_z_list) + " " + Collections.min(gyro_z_list));
+        if(in_beacon==false){
+            TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction + " "/*+Gyro_Mes*/+"\n"+
+                Collections.max(gyro_z_list) + " " + Collections.min(gyro_z_list));
 
-        if(reference_device_number != null && !reference_device_number.trim().isEmpty() && (direction==1 || direction == 2))
-            map.set_location(Integer.valueOf(reference_device_number.substring(1)),direction,numSteps,40);
-
+            if(reference_device_number != null && !reference_device_number.trim().isEmpty() && (direction==1 || direction == 2))
+                map.set_location(Integer.valueOf(reference_device_number.substring(1)),direction,numSteps,40);
+        }
 
         numSteps++;
 
@@ -305,7 +306,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         list.clear();
     }
     int count;
+    boolean in_beacon;
     public int direction;
+    public int last_direction;
     public String Gyro_Mes;
     int present_reference_index;
     int previous_reference_index;
@@ -322,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             clearList(list_rssi);
             clearList(list_to_write);
             count=0;
+            in_beacon=false;
             mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);
             // Stops scanning after a pre-defined scan period.
@@ -363,7 +367,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             direction=-1;
 */
                             double treshold = 2;
-
                             int present_rssi = list_rssi.get(list_device_address.indexOf(list_device_address_all.get(present_reference_index)));
 
                             if (gyro_z_list.size() > 0 && (Collections.max(gyro_z_list) > treshold || Collections.min(gyro_z_list) < -treshold) && direction == 1) {
@@ -444,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                             }
                                         } else {
 
+
                                             direction = -1;
                                             numSteps = 0;
                                             Gyro_Mes = "";
@@ -455,10 +459,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                             }
 
+                            if(direction==1 || direction==2)
+                                last_direction=direction;
+                            if((direction!=1 || direction!=2) && max_rssi>-70){
+                                in_beacon=true;
+                                if(in_beacon){
+                                    direction=last_direction;
+                                    numSteps=0;
+                                    TvSteps.setText(TEXT_NUM_STEPS + numSteps +", ref: " + reference_device_number + ", dir: " +direction);
+
+                                    if(reference_device_number != null && !reference_device_number.trim().isEmpty() && (direction==1 || direction == 2))
+                                        map.set_location(Integer.valueOf(reference_device_number.substring(1)),direction,numSteps,40);
+                                }
+                                in_beacon=false;
+                                direction=-1;
+                            }
 
                             previous_reference_index = present_reference_index;
                             previous_rssi = list_rssi.get(list_device_address.indexOf(list_device_address_all.get(previous_reference_index)));
                         }
+                        else {
+
+                            direction = -1;
+                            numSteps = 0;
+                            Gyro_Mes = "";
+
+                        }
+
                     }
 
                     if(is_pressed) {
