@@ -475,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 }
                             }
 
-                            if((direction!=1 || direction!=2) && max_rssi>-70){
+                            if(direction!=1 && direction!=2){
                                 in_beacon=true;
                                 if(in_beacon){
                                     direction=last_direction;
