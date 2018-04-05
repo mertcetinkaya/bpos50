@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView TvSteps;
     Button BtnStart;
     Button BtnStop;
+    Button ListRouteBtn;
     Button LabMap;
+    Button ProductTakenBtn;
     boolean step_watched=false;
 
 
@@ -114,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         BtnStart = (Button) findViewById(R.id.btn_start);
         BtnStop = (Button) findViewById(R.id.btn_stop);
         LabMap = (Button)findViewById(R.id.lab_map);
+        ListRouteBtn = (Button)findViewById(R.id.listroutebtn);
+        ProductTakenBtn = (Button)findViewById(R.id.btn_product_taken);
 
         BtnStart.setOnClickListener(new OnClickListener() {
 
@@ -135,6 +139,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 step_watched=false;
                 sensorManager.unregisterListener(MainActivity.this);
 
+            }
+        });
+
+
+        ListRouteBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intolistroute = new Intent(MainActivity.this, ListRoute.class);
+                startActivity(intolistroute);
             }
         });
 
@@ -473,7 +487,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                             if(direction==1 || direction==2){
                                 last_direction=direction;
-                                if(max_rssi>-70){
+                                //This if comment may be activated.
+                                //if(max_rssi>-70){
                                     in_beacon=true;
                                     if(in_beacon){
                                         numSteps=0;
@@ -484,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     }
                                     in_beacon=false;
 
-                                }
+                                //}
                             }
 
                             if(direction!=1 && direction!=2){
